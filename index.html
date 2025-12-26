@@ -10,7 +10,7 @@
         :root { 
             --sky-grad: linear-gradient(135deg, #0c4a6e 0%, #0ea5e9 50%, #f0f9ff 100%);
             --logo-grad: linear-gradient(to bottom, #ffffff 20%, #e0f2fe 100%);
-            --glass: rgba(255, 255, 255, 0.92);
+            --glass: rgba(255, 255, 255, 0.94);
             --primary: #0369a1;
             --youtube: #FF0000; --spotify: #1DB954; --karaoke: #334155; --google: #4285F4;
         }
@@ -32,7 +32,7 @@
         .media-btn { padding: 10px; border-radius: 12px; border: none; color: white; font-size: 0.75rem; font-weight: 800; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
         
         .prompter { flex: 1; overflow-y: auto; padding: 25px; text-align: center; font-size: 38px; font-weight: 700; line-height: 1.6; background: var(--glass); border-radius: 25px; margin: 10px 0; border: 1px solid rgba(0,0,0,0.05); }
-        .code-display { font-size: 1.1rem; font-weight: 800; color: #166534; background: #dcfce7; padding: 12px; border-radius: 15px; margin: 10px 0; text-align: center; border: 2px dashed #166534; word-break: break-all; user-select: all; }
+        #save-area { position: sticky; bottom: 0; background: transparent; padding-top: 10px; }
     </style>
 </head>
 <body onload="initApp();">
@@ -42,13 +42,13 @@
         <h1 class="main-logo">שירורום</h1>
         <div class="slogan">המופע של איתמר</div>
         <button class="btn btn-white" onclick="nav('s_join')"><i class="fas fa-key"></i> כניסה עם קוד מופע</button>
-        <button class="btn" style="background:rgba(255,255,255,0.2);" onclick="nav('s2')"><i class="fas fa-edit"></i> ניהול מופע חדש</button>
+        <button class="btn" style="background:rgba(255,255,255,0.2);" onclick="startNewShow()"><i class="fas fa-edit"></i> ניהול מופע חדש</button>
     </div>
 
     <div id="s_join" class="screen">
         <button class="round" onclick="nav('s1')">←</button>
         <h2 style="color:white; text-align:center;">הכנס קוד מופע</h2>
-        <input type="text" id="joinCode" class="glass-card" style="width:100%; text-align:center; font-size:1rem;" placeholder="הדבק קוד כאן">
+        <input type="text" id="joinCode" class="glass-card" style="width:100%; text-align:center;" placeholder="הדבק קוד כאן">
         <button id="loadBtn" class="btn" onclick="loadByCode()">טען מופע 🎶</button>
     </div>
 
@@ -59,15 +59,16 @@
         </div>
         <button class="btn btn-white" onclick="nav('s3')">+ הוסף שיר חדש</button>
         <div id="adminList" style="flex:1; overflow-y:auto; margin:10px 0;"></div>
-        <button id="saveBtn" class="btn" style="background:#25D366;" onclick="saveAndGetCode()"><i class="fas fa-cloud-upload-alt"></i> שמור וקבל קוד לחברים</button>
+        <div id="save-area">
+            <button id="saveBtn" class="btn" style="background:#25D366;" onclick="saveAndGetCode()"><i class="fas fa-cloud-upload-alt"></i> שמור וקבל קוד לחברים</button>
+        </div>
     </div>
 
     <div id="s_code" class="screen" style="justify-content: center;">
         <div class="glass-card" style="text-align: center;">
             <h3 style="margin-top:0; color:var(--primary);">המופע מוכן! 🚀</h3>
-            <p>תן לחברים את הקוד הזה:</p>
-            <div id="displayCode" class="code-display">----</div>
-            <button class="btn" onclick="copyCode()"><i class="fas fa-copy"></i> העתק קוד</button>
+            <div id="displayCode" style="font-size:1rem; font-weight:bold; background:#eee; padding:10px; margin:10px 0; border-radius:10px; word-break:break-all;">----</div>
+            <button class="btn" onclick="copyCode()">העתק קוד</button>
             <button class="btn btn-white" onclick="nav('s2')">חזור לניהול</button>
         </div>
     </div>
@@ -81,33 +82,27 @@
     <div id="s_edit" class="screen">
         <button class="round" onclick="nav('s3')">←</button>
         <h3 id="editTitle" style="color:white; text-align:center;"></h3>
-        <button class="btn" style="background:var(--google);" onclick="openMedia('goog')">מצא מילים בגוגל 🔍</button>
-        <textarea id="lyricPaste" class="glass-card" style="flex:1; width:100%; font-size:1.1rem; border-radius:15px;" placeholder="הדבק מילים כאן..."></textarea>
-        <button class="btn" onclick="saveSong()">שמור שיר בסט ✅</button>
+        <textarea id="lyricPaste" class="glass-card" style="flex:1; width:100%;" placeholder="הדבק מילים כאן..."></textarea>
+        <button class="btn" onclick="saveSong()">שמור שיר ✅</button>
     </div>
 
     <div id="s4" class="screen">
-        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:10px;">
-            <button class="round" onclick="nav('s1')">←</button>
-            <h2 style="color:white; margin:0;">בחרו שיר</h2>
-        </div>
+        <button class="round" onclick="nav('s1')">←</button>
+        <h2 style="color:white; text-align:center;">בחרו שיר</h2>
         <div id="audienceList" style="flex:1; overflow-y:auto;"></div>
     </div>
 
     <div id="s5" class="screen">
         <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:10px;">
-            <button id="backBtn" class="round" onclick="goBackFromPlayer()">←</button>
-            <h4 id="pTitle" style="color:white; margin:0; font-size:1rem; flex:1; text-align:center; white-space:nowrap; overflow:hidden;"></h4>
+            <button class="round" onclick="exitPlayer()">← חזרה</button>
+            <h4 id="pTitle" style="color:white; margin:0; font-size:1rem; flex:1; text-align:center;"></h4>
         </div>
-        
         <div class="media-grid">
-            <button class="media-btn" style="background:var(--youtube);" onclick="openMedia('yt')"><i class="fab fa-youtube"></i>YouTube</button>
-            <button class="media-btn" style="background:var(--karaoke);" onclick="openMedia('kar')"><i class="fas fa-microphone"></i>קריוקי</button>
-            <button class="media-btn" style="background:var(--spotify);" onclick="openMedia('spot')"><i class="fab fa-spotify"></i>Spotify</button>
+            <button class="media-btn" style="background:var(--youtube);" onclick="openMedia('yt')">YouTube</button>
+            <button class="media-btn" style="background:var(--karaoke);" onclick="openMedia('kar')">קריוקי</button>
+            <button class="media-btn" style="background:var(--spotify);" onclick="openMedia('spot')">Spotify</button>
         </div>
-
         <div id="pBox" class="prompter"></div>
-
         <div style="display:flex; justify-content:center; gap:15px; padding-bottom:10px;">
             <button class="round" onclick="adjFs(-4)">A-</button>
             <button class="btn btn-white" style="width:140px; margin:0;" onclick="togglePlay()" id="playBtn">PLAY ▶</button>
@@ -117,90 +112,80 @@
 </div>
 
 <script>
-    let db = {}; let setlist = []; let curTitle = ""; let scInt; let fontSize = 38; let isAdmin = false;
-    const BIN_URL = 'https://api.jsonbin.io/v3/b';
-    const MK = '$2b$10$5p8oH3q8I1Y6e6qJ6.eGvO3R/u7.N2lC3fA4uUjE5B7pG0r/FfW.O';
+    let db = {}; let setlist = []; let curTitle = ""; let scInt; let fontSize = 38; 
+    let mode = 'audience'; // משתנה למעקב: האם אני מנהל או קהל
 
-    function initApp() {
-        // התחלה נקייה
-    }
+    function initApp() {}
 
     function nav(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        if(id === 's2') { isAdmin = true; renderAdminList(); }
-        if(id === 's4') { isAdmin = false; renderAudienceList(); }
+        if(id === 's2') renderAdminList();
+        if(id === 's4') renderAudienceList();
         clearInterval(scInt);
-        document.getElementById('playBtn').innerText = "PLAY ▶";
     }
 
-    function goBackFromPlayer() {
-        if(isAdmin) nav('s2');
+    function startNewShow() {
+        mode = 'admin';
+        nav('s2');
+    }
+
+    function exitPlayer() {
+        if(mode === 'admin') nav('s2');
         else nav('s4');
     }
 
     async function saveAndGetCode() {
-        if(setlist.length === 0) return alert("הוסף שירים קודם");
-        const btn = document.getElementById('saveBtn'); 
-        btn.innerText = "שומר בענן... ⏳"; btn.disabled = true;
+        const btn = document.getElementById('saveBtn');
+        btn.innerText = "שומר... ⏳";
         try {
-            const res = await fetch(BIN_URL, {
+            const res = await fetch('https://api.jsonbin.io/v3/b', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-Master-Key': MK },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': '$2b$10$5p8oH3q8I1Y6e6qJ6.eGvO3R/u7.N2lC3fA4uUjE5B7pG0r/FfW.O' 
+                },
                 body: JSON.stringify({ db, list: setlist })
             });
-            if(!res.ok) throw new Error();
             const data = await res.json();
-            document.getElementById('displayCode').innerText = data.metadata.id;
-            nav('s_code');
-        } catch(e) { 
-            alert("שגיאת שמירה. נסה שוב בעוד כמה שניות."); 
-        } finally {
-            btn.innerText = "שמור וקבל קוד לחברים"; btn.disabled = false;
-        }
+            if(data.metadata) {
+                document.getElementById('displayCode').innerText = data.metadata.id;
+                nav('s_code');
+            } else { throw new Error(); }
+        } catch(e) { alert("שגיאת שמירה. נסה שוב."); }
+        btn.innerText = "שמור וקבל קוד לחברים";
     }
 
     async function loadByCode() {
         const code = document.getElementById('joinCode').value.trim();
-        if(!code) return alert("הכנס קוד");
-        const btn = document.getElementById('loadBtn');
-        btn.innerText = "טוען... ⏳";
+        if(!code) return;
+        mode = 'audience';
         try {
-            const res = await fetch(`${BIN_URL}/${code}/latest`, {
-                headers: { 'X-Master-Key': MK }
+            const res = await fetch(`https://api.jsonbin.io/v3/b/${code}/latest`, {
+                headers: { 'X-Master-Key': '$2b$10$5p8oH3q8I1Y6e6qJ6.eGvO3R/u7.N2lC3fA4uUjE5B7pG0r/FfW.O' }
             });
             const data = await res.json();
             db = data.record.db; setlist = data.record.list;
             nav('s4');
-        } catch(e) { alert("קוד לא נמצא או שגיאת חיבור"); }
-        btn.innerText = "טען מופע 🎶";
-    }
-
-    function copyCode() {
-        const code = document.getElementById('displayCode').innerText;
-        navigator.clipboard.writeText(code).then(() => alert("הקוד הועתק!"));
+        } catch(e) { alert("קוד לא נמצא"); }
     }
 
     async function searchSongs(el) {
         if(el.value.length < 2) return;
-        try {
-            const r = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(el.value)}&entity=song&limit=6&country=il`);
-            const d = await r.json();
-            const res = document.getElementById('results'); res.innerHTML = '';
-            d.results.forEach(t => {
-                const div = document.createElement('div'); div.className = 'glass-card';
-                div.innerHTML = `<b>${t.trackName}</b><br><small>${t.artistName}</small>`;
-                div.onclick = () => { curTitle = t.trackName + " - " + t.artistName; document.getElementById('editTitle').innerText = curTitle; nav('s_edit'); };
-                res.appendChild(div);
-            });
-        } catch(e) {}
+        const r = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(el.value)}&entity=song&limit=5&country=il`);
+        const d = await r.json();
+        const res = document.getElementById('results'); res.innerHTML = '';
+        d.results.forEach(t => {
+            const div = document.createElement('div'); div.className = 'glass-card';
+            div.innerHTML = `<b>${t.trackName}</b><br><small>${t.artistName}</small>`;
+            div.onclick = () => { curTitle = t.trackName + " - " + t.artistName; document.getElementById('editTitle').innerText = curTitle; nav('s_edit'); };
+            res.appendChild(div);
+        });
     }
 
     function saveSong() {
         const lyr = document.getElementById('lyricPaste').value;
-        if(!lyr.trim()) return alert("הדבק מילים קודם");
         db[curTitle] = lyr; if(!setlist.includes(curTitle)) setlist.push(curTitle);
-        document.getElementById('lyricPaste').value = "";
         nav('s2');
     }
 
@@ -208,20 +193,16 @@
         const list = document.getElementById('adminList'); list.innerHTML = '';
         setlist.forEach((s, i) => {
             const d = document.createElement('div'); d.className = 'glass-card';
-            d.style.display = 'flex'; d.style.alignItems = 'center';
-            d.innerHTML = `<span style="flex:1" onclick="preview(${i})"><b>${i+1}.</b> ${s}</span>
-            <button style="border:none; background:none; color:red; padding:10px;" onclick="removeSong(${i})"><i class="fas fa-trash"></i></button>`;
+            d.innerHTML = `<span onclick="preview(${i})"><b>${i+1}.</b> ${s}</span>`;
             list.appendChild(d);
         });
     }
 
-    function removeSong(i) { setlist.splice(i, 1); renderAdminList(); }
-    
-    function preview(i) { 
+    function preview(i) {
         curTitle = setlist[i];
-        document.getElementById('pTitle').innerText = curTitle; 
-        document.getElementById('pBox').innerText = db[curTitle]; 
-        nav('s5'); 
+        document.getElementById('pTitle').innerText = curTitle;
+        document.getElementById('pBox').innerText = db[curTitle];
+        nav('s5');
     }
 
     function renderAudienceList() {
@@ -240,13 +221,18 @@
     }
 
     function adjFs(v) { fontSize += v; document.getElementById('pBox').style.fontSize = fontSize + 'px'; }
-    
+
     function openMedia(type) {
         let q = encodeURIComponent(curTitle);
         if(type === 'yt') window.open(`https://www.youtube.com/results?search_query=${q}`, '_blank');
         if(type === 'kar') window.open(`https://www.youtube.com/results?search_query=${q}+קריוקי`, '_blank');
         if(type === 'spot') window.open(`spotify:search:${q}`, '_blank');
-        if(type === 'goog') window.open(`https://www.google.com/search?q=${q}+מילים`, '_blank');
+    }
+
+    function copyCode() {
+        const c = document.getElementById('displayCode').innerText;
+        navigator.clipboard.writeText(c);
+        alert("הקוד הועתק!");
     }
 </script>
 </body>
