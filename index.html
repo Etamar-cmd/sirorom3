@@ -16,7 +16,6 @@
         * { box-sizing: border-box; font-family: 'Varela Round', sans-serif; -webkit-tap-highlight-color: transparent; }
         body, html { margin: 0; padding: 0; height: 100%; background: var(--sky-grad); background-attachment: fixed; overflow: hidden; position: relative; }
         
-        /* סימן מים */
         body::before {
             content: "שירורום";
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg);
@@ -41,6 +40,9 @@
         .credit-line { color: white; margin-top: 15px; font-size: 0.9rem; opacity: 0.9; background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; }
         #sticky-footer { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 20px; margin-top: auto; }
         input, textarea { width: 100%; border-radius: 15px; padding: 12px; border: none; background: var(--glass); }
+        
+        .media-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+        .media-btn { padding: 10px; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
     </style>
 </head>
 <body onload="initApp();">
@@ -51,7 +53,6 @@
     <div id="s1" class="screen active" style="justify-content: center; text-align: center;">
         <h1 style="font-size: 5.5rem; color: white; margin: 0; line-height: 0.8;">שירורום</h1>
         <p style="color: white; font-size: 1.6rem; margin: 10px 0;">שרים יחד מהלב</p>
-        
         <div class="credit-line">פותח ע"י איתמר אושפיז</div>
 
         <div id="audience-box" style="display:none; margin-top:40px; width: 100%;">
@@ -77,7 +78,7 @@
         <div id="adminList" style="flex:1; overflow-y:auto; margin:10px 0;"></div>
         <div id="sticky-footer">
             <button class="btn" style="background:#f59e0b;" onclick="copyLongLink()">1. העתק לינק (ארוך)</button>
-            <button class="btn" style="background:#8b5cf6;" onclick="window.open('https://tinyurl.com','_blank')">2. פתח TinyURL.com</button>
+            <button class="btn" style="background:#8b5cf6;" onclick="window.open('https://picsee.io/en','_blank')">2. פתח PicSee (קיצור לינק)</button>
             <div style="background:white; border-radius:15px; padding:8px; margin-top:5px;">
                 <input type="text" id="shortLinkInput" placeholder="הדבק לינק מקוצר כאן...">
                 <button class="btn" style="background:#10b981; margin:5px 0 0 0;" onclick="shareShortLink()">3. שלח בווטסאפ</button>
@@ -99,8 +100,11 @@
     </div>
 
     <div id="s4" class="screen">
-        <button class="round-btn" onclick="nav('s1')"><i class="fas fa-home"></i></button>
-        <h2 style="color:white; text-align:center;">שירי המופע</h2>
+        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:10px;">
+            <button class="round-btn" onclick="nav('s1')"><i class="fas fa-home"></i></button>
+            <h2 style="color:white; margin:0;">שירי המופע</h2>
+            <div style="width:45px;"></div>
+        </div>
         <div id="audienceList" style="flex:1; overflow-y:auto;"></div>
     </div>
 
@@ -110,10 +114,10 @@
             <h4 id="pTitle" style="color:white; margin:0; flex:1; text-align:center;"></h4>
         </div>
         
-        <div id="mediaTools" class="media-grid" style="display:none;">
-            <button class="media-btn" style="background:#FF0000; padding:10px; border:none; border-radius:10px; color:white;" onclick="openMedia('yt')">YouTube</button>
-            <button class="media-btn" style="background:#334155; padding:10px; border:none; border-radius:10px; color:white;" onclick="openMedia('kar')">קריוקי</button>
-            <button class="media-btn" style="background:#1DB954; padding:10px; border:none; border-radius:10px; color:white;" onclick="openMedia('spot')">Spotify</button>
+        <div class="media-grid">
+            <button class="media-btn" style="background:#FF0000;" onclick="openMedia('yt')">YouTube</button>
+            <button class="media-btn" style="background:#334155;" onclick="openMedia('kar')">קריוקי</button>
+            <button class="media-btn" style="background:#1DB954;" onclick="openMedia('spot')">Spotify</button>
         </div>
 
         <div class="tools-bar" style="display:flex; justify-content: space-around; background: rgba(0,0,0,0.1); padding: 8px; border-radius: 15px; margin-bottom: 10px;">
@@ -175,7 +179,6 @@
         document.getElementById(id).classList.add('active');
         if(id === 's2') renderAdmin();
         if(id === 's4') renderAudience();
-        if(id === 's5') document.getElementById('mediaTools').style.display = isAdminMode ? 'grid' : 'none';
     }
 
     function renderAdmin() {
@@ -193,7 +196,7 @@
         const list = document.getElementById('audienceList'); list.innerHTML = '';
         setlist.forEach(s => {
             const d = document.createElement('div'); d.className = 'glass-card';
-            d.innerHTML = `<span>${s}</span> <i class="fas fa-chevron-left" style="color:var(--primary)"></i>`;
+            d.innerHTML = `<span>${s}</span> <i class="fas fa-play" style="color:var(--primary)"></i>`;
             d.onclick = () => openPrompter(s);
             list.appendChild(d);
         });
@@ -229,7 +232,7 @@
     function shareShortLink() {
         const short = document.getElementById('shortLinkInput').value;
         if(!short) return alert("הדבק לינק מקוצר קודם");
-        window.open(`https://wa.me/?text=${encodeURIComponent("בואו לשיר יחד! הנה הפלייליסט שלנו: " + short)}`, '_blank');
+        window.open(`https://wa.me/?text=${encodeURIComponent("בואו לשיר! הנה המילים והקישורים: " + short)}`, '_blank');
     }
 
     function openMedia(type) {
