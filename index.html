@@ -34,19 +34,12 @@
         
         .main-logo { font-size: 5rem; font-weight: 800; margin: 0; background: var(--logo-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; line-height: 0.9; }
         .slogan { color: white; font-size: 1.5rem; text-align: center; margin-bottom: 20px; font-weight: 600; }
-        .credit-card { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border-radius: 20px; padding: 10px 20px; color: white; text-align: center; align-self: center; margin-bottom: 30px; }
 
         .btn { padding: 16px; border-radius: 30px; border: none; background: var(--primary); color: white; font-weight: 700; cursor: pointer; width: 100%; margin: 8px 0; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .round-btn { width: 45px; height: 45px; border-radius: 50%; border: none; background: var(--glass); display: flex; align-items: center; justify-content: center; color: var(--primary); cursor: pointer; }
 
         .glass-card { background: var(--glass); border-radius: 20px; padding: 15px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.4); display: flex; justify-content: space-between; align-items: center; }
-        .media-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px; }
-        .media-btn { padding: 10px; border-radius: 12px; border: none; color: white; font-size: 0.75rem; font-weight: 800; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
-
         .prompter { flex: 1; overflow-y: auto; padding: 25px; text-align: center; font-size: 34px; font-weight: 700; line-height: 1.5; background: var(--glass); border-radius: 25px; margin: 10px 0; color: #1e293b; white-space: pre-wrap; }
-        
-        .emoji-fly { position: absolute; bottom: -50px; font-size: 2rem; animation: flyUp 4s linear forwards; pointer-events: none; }
-        @keyframes flyUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-110vh) translateX(var(--randomX)); opacity: 0; } }
         
         #sticky-footer { position: sticky; bottom: 0; padding: 5px 0; width: 100%; }
         input, textarea { width: 100%; border: none; border-radius: 15px; padding: 15px; background: var(--glass); font-size: 1.1rem; }
@@ -55,12 +48,9 @@
 <body onload="initApp();">
 
 <div id="app">
-    <div id="emoji-container" style="position: absolute; inset:0; overflow:hidden; pointer-events:none;"></div>
-
     <div id="s1" class="screen active" style="justify-content: center;">
         <h1 class="main-logo">שירורום</h1>
         <div class="slogan">זמר שירה בציבור</div>
-        <div class="credit-card">פותח ע"י איתמר אושפיז</div>
         <button class="btn" style="background:rgba(255,255,255,0.2);" onclick="startAdmin()">ניהול מופע חדש 🛠️</button>
         <div id="audience-box" style="display:none; width:100%; margin-top:10px;">
             <button class="btn" style="background:white; color:var(--primary);" onclick="nav('s4')">לסטליסט המופע 🎶</button>
@@ -74,18 +64,17 @@
             <div></div>
         </div>
         <button class="btn" style="background:white; color:var(--primary);" onclick="nav('s3')"><i class="fas fa-plus-circle"></i> הוסף שיר</button>
-        
         <div id="adminList" style="flex:1; overflow-y:auto; margin:10px 0;"></div>
         
         <div id="sticky-footer">
             <button class="btn" style="background:var(--orange);" onclick="generateLink()">
-                <i class="fas fa-save"></i> שמירה עבור אתר חברים
+                <i class="fas fa-save"></i> שמירה... עבור אתר חברים
             </button>
             <button id="tinyBtn" class="btn" style="background:var(--purple); display:none;" onclick="openTinyURL()">
-                <i class="fas fa-compress-alt"></i> צמצם לינק
+                <i class="fas fa-compress-alt"></i> צמצום
             </button>
             <button class="btn" style="background:var(--success);" onclick="shareViaWhatsapp()">
-                <i class="fab fa-whatsapp"></i> שלח בווטסאפ
+                <i class="fab fa-whatsapp"></i> שליחה בווצאפ
             </button>
         </div>
     </div>
@@ -100,50 +89,26 @@
     <div id="s_edit" class="screen">
         <button class="round-btn" onclick="nav('s3')"><i class="fas fa-arrow-right"></i></button>
         <h3 id="editTitle" style="color:white; text-align:center; margin:10px 0;"></h3>
+        
         <button class="btn" style="background:#4285F4; margin-bottom:10px;" onclick="searchInGoogle()">
             <i class="fab fa-google"></i> מצא מילים בגוגל
         </button>
+        
         <textarea id="lyricPaste" style="flex:1; margin-bottom:10px;" placeholder="הדבק כאן את המילים..."></textarea>
         <div id="sticky-footer">
             <button class="btn" style="background:var(--success);" onclick="addSong()">שמור שיר ✅</button>
         </div>
     </div>
 
-    <div id="s4" class="screen">
-        <button class="round-btn" onclick="nav('s1')"><i class="fas fa-home"></i></button>
-        <h2 style="color:white; text-align:center;">בחרו שיר</h2>
-        <div id="audienceList" style="flex:1; overflow-y:auto;"></div>
-    </div>
-
-    <div id="s5" class="screen">
-        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:10px;">
-            <button class="round-btn" onclick="exitPlayer()"><i class="fas fa-times"></i></button>
-            <h4 id="pTitle" style="color:white; margin:0; flex:1; text-align:center; font-size:1rem;"></h4>
-        </div>
-        <div class="media-grid">
-            <button class="media-btn" style="background:#FF0000;" onclick="openMedia('yt')"><i class="fab fa-youtube"></i> YouTube</button>
-            <button class="media-btn" style="background:#334155;" onclick="openMedia('kar')"><i class="fas fa-microphone"></i> קריוקי</button>
-            <button class="media-btn" style="background:#1DB954;" onclick="openMedia('spot')"><i class="fab fa-spotify"></i> Spotify</button>
-        </div>
-        <div id="pBox" class="prompter"></div>
-    </div>
-
-    <div id="s_link" class="screen" style="justify-content: center;">
-        <div class="glass-card" style="flex-direction:column; text-align: center; gap:15px;">
-            <i class="fas fa-check-circle" style="font-size:3rem; color:var(--success);"></i>
-            <h3>המופע מוכן!</h3>
-            <textarea id="shareURL" style="width:100%; height:80px; font-size:0.7rem;" readonly></textarea>
-            <button class="btn" onclick="copyURL()">העתק לינק</button>
-            <button class="btn" style="background:white; color:var(--primary);" onclick="nav('s2')">חזור לניהול</button>
-        </div>
-    </div>
+    <div id="s4" class="screen"><button class="round-btn" onclick="nav('s1')"><i class="fas fa-home"></i></button><h2 style="color:white; text-align:center;">בחרו שיר</h2><div id="audienceList" style="flex:1; overflow-y:auto;"></div></div>
+    <div id="s5" class="screen"><div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:10px;"><button class="round-btn" onclick="exitPlayer()"><i class="fas fa-times"></i></button><h4 id="pTitle" style="color:white; margin:0; flex:1; text-align:center; font-size:1rem;"></h4></div><div class="media-grid" style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px; margin-bottom:15px;"><button class="media-btn" style="background:#FF0000; color:white; border:none; border-radius:12px; padding:10px;" onclick="openMedia('yt')">YouTube</button><button class="media-btn" style="background:#334155; color:white; border:none; border-radius:12px; padding:10px;" onclick="openMedia('kar')">קריוקי</button><button class="media-btn" style="background:#1DB954; color:white; border:none; border-radius:12px; padding:10px;" onclick="openMedia('spot')">Spotify</button></div><div id="pBox" class="prompter"></div></div>
+    <div id="s_link" class="screen" style="justify-content: center;"><div class="glass-card" style="flex-direction:column; text-align: center; gap:15px;"><i class="fas fa-check-circle" style="font-size:3rem; color:var(--success);"></i><h3>המופע מוכן!</h3><textarea id="shareURL" style="width:100%; height:80px; font-size:0.7rem;" readonly></textarea><button class="btn" onclick="copyURL()">העתק לינק</button><button class="btn" style="background:white; color:var(--primary);" onclick="nav('s2')">חזור לניהול</button></div></div>
 </div>
 
 <script>
     let db = {}; let setlist = []; let curTitle = ""; let isAdmin = false;
 
     function initApp() {
-        startEmojis();
         initSortable();
         const params = new URLSearchParams(window.location.search);
         const data = params.get('show');
@@ -159,54 +124,25 @@
 
     function initSortable() {
         const el = document.getElementById('adminList');
-        Sortable.create(el, {
-            animation: 150,
-            handle: '.song-info',
-            onEnd: function() {
-                const newList = [];
-                document.querySelectorAll('.song-card').forEach(card => { newList.push(card.getAttribute('data-title')); });
-                setlist = newList;
-            }
-        });
-    }
-
-    function startEmojis() {
-        const container = document.getElementById('emoji-container');
-        const emojis = ['❤️', '🎶', '🎵', '✨'];
-        setInterval(() => {
-            const e = document.createElement('div');
-            e.className = 'emoji-fly';
-            e.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-            e.style.left = Math.random() * 100 + 'vw';
-            e.style.setProperty('--randomX', (Math.random() * 200 - 100) + 'px');
-            container.appendChild(e);
-            setTimeout(() => e.remove(), 4000);
-        }, 600);
+        Sortable.create(el, { animation: 150, handle: '.song-info', onEnd: function() {
+            const newList = [];
+            document.querySelectorAll('.song-card').forEach(card => { newList.push(card.getAttribute('data-title')); });
+            setlist = newList;
+        }});
     }
 
     function nav(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        if(id === 's2') {
-            renderAdmin();
-            document.getElementById('tinyBtn').style.display = setlist.length > 0 ? 'flex' : 'none';
-        }
+        if(id === 's2') { renderAdmin(); document.getElementById('tinyBtn').style.display = setlist.length > 0 ? 'flex' : 'none'; }
         if(id === 's4') renderAudience();
     }
 
     function renderAdmin() {
         const list = document.getElementById('adminList'); list.innerHTML = '';
         setlist.forEach((s, i) => {
-            const d = document.createElement('div');
-            d.className = 'glass-card song-card';
-            d.setAttribute('data-title', s);
-            d.innerHTML = `
-                <div class="song-info" style="flex:1;" onclick="openPrompter('${s}')">
-                    <i class="fas fa-bars" style="color:#94a3b8; margin-left:10px;"></i>
-                    <span><b>${i+1}.</b> ${s}</span>
-                </div>
-                <i class="fas fa-trash-alt" style="color:#ef4444; padding:10px;" onclick="deleteSong('${s}')"></i>
-            `;
+            const d = document.createElement('div'); d.className = 'glass-card song-card'; d.setAttribute('data-title', s);
+            d.innerHTML = `<div class="song-info" style="flex:1;" onclick="openPrompter('${s}')"><i class="fas fa-bars" style="color:#94a3b8; margin-left:10px;"></i><span><b>${i+1}.</b> ${s}</span></div><i class="fas fa-trash-alt" style="color:#ef4444; padding:10px;" onclick="deleteSong('${s}')"></i>`;
             list.appendChild(d);
         });
     }
@@ -222,10 +158,8 @@
     }
 
     function openPrompter(title) {
-        curTitle = title;
-        document.getElementById('pTitle').innerText = title;
-        document.getElementById('pBox').innerText = db[title];
-        nav('s5');
+        curTitle = title; document.getElementById('pTitle').innerText = title;
+        document.getElementById('pBox').innerText = db[title]; nav('s5');
     }
 
     function openMedia(type) {
@@ -236,12 +170,7 @@
     }
 
     function deleteSong(title) {
-        if(confirm(`למחוק את "${title}"?`)) {
-            setlist = setlist.filter(s => s !== title);
-            delete db[title];
-            renderAdmin();
-            document.getElementById('tinyBtn').style.display = setlist.length > 0 ? 'flex' : 'none';
-        }
+        if(confirm(`למחוק את "${title}"?`)) { setlist = setlist.filter(s => s !== title); delete db[title]; renderAdmin(); }
     }
 
     function searchInGoogle() { window.open(`https://www.google.com/search?q=${encodeURIComponent(curTitle)}+מילים`, '_blank'); }
@@ -255,7 +184,7 @@
         const res = document.getElementById('results'); res.innerHTML = '';
         d.results.forEach(t => {
             const div = document.createElement('div'); div.className = 'glass-card';
-            div.innerHTML = `<div><b>${t.trackName}</b><br><small>${t.artistName}</small></div> <i class="fas fa-plus-circle" style="color:var(--primary); font-size:1.5rem;"></i>`;
+            div.innerHTML = `<div><b>${t.trackName}</b><br><small>${t.artistName}</small></div> <i class="fas fa-plus-circle"></i>`;
             div.onclick = () => { curTitle = t.trackName + " - " + t.artistName; document.getElementById('editTitle').innerText = curTitle; nav('s_edit'); };
             res.appendChild(div);
         });
@@ -264,10 +193,8 @@
     function addSong() {
         const lyrics = document.getElementById('lyricPaste').value;
         if(!lyrics.trim()) return alert("נא להדביק מילים");
-        db[curTitle] = lyrics;
-        if(!setlist.includes(curTitle)) setlist.push(curTitle);
-        document.getElementById('lyricPaste').value = "";
-        nav('s2');
+        db[curTitle] = lyrics; if(!setlist.includes(curTitle)) setlist.push(curTitle);
+        document.getElementById('lyricPaste').value = ""; nav('s2');
     }
 
     function getFullLink() {
@@ -275,28 +202,10 @@
         return window.location.origin + window.location.pathname + "?show=" + data;
     }
 
-    function generateLink() {
-        if(setlist.length === 0) return alert("הוסף שירים קודם");
-        document.getElementById('shareURL').value = getFullLink();
-        nav('s_link');
-    }
-
-    function openTinyURL() {
-        const url = getFullLink();
-        window.open(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(url)}`, '_blank');
-        alert("TinyURL יפתח את הקישור המקוצר. העתק אותו משם.");
-    }
-
-    function shareViaWhatsapp() {
-        const url = getFullLink();
-        window.open(`https://wa.me/?text=${encodeURIComponent("בואו לשיר איתי! הנה המילים למופע: " + url)}`, '_blank');
-    }
-
-    function copyURL() {
-        const el = document.getElementById('shareURL'); el.select();
-        navigator.clipboard.writeText(el.value);
-        alert("הלינק הועתק!");
-    }
+    function generateLink() { if(setlist.length === 0) return alert("הוסף שירים"); document.getElementById('shareURL').value = getFullLink(); nav('s_link'); }
+    function openTinyURL() { window.open(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(getFullLink())}`, '_blank'); }
+    function shareViaWhatsapp() { window.open(`https://wa.me/?text=${encodeURIComponent("הנה המילים למופע: " + getFullLink())}`, '_blank'); }
+    function copyURL() { const el = document.getElementById('shareURL'); el.select(); navigator.clipboard.writeText(el.value); alert("הועתק!"); }
 </script>
 </body>
 </html>
