@@ -10,48 +10,37 @@
         @import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
         :root { 
             --sky-grad: linear-gradient(135deg, #0c4a6e 0%, #0ea5e9 50%, #f0f9ff 100%);
-            --logo-grad: linear-gradient(to bottom, #ffffff 20%, #e0f2fe 100%);
             --glass: rgba(255, 255, 255, 0.94);
             --primary: #0369a1;
-            --success: #10b981;
-            --orange: #f59e0b;
-            --purple: #8b5cf6;
         }
-        * { box-sizing: border-box; transition: 0.3s; font-family: 'Varela Round', sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; font-family: 'Varela Round', sans-serif; -webkit-tap-highlight-color: transparent; }
         body, html { margin: 0; padding: 0; height: 100%; background: var(--sky-grad); background-attachment: fixed; overflow: hidden; position: relative; }
         
-        /* סימן מים שירורום */
+        /* סימן מים */
         body::before {
             content: "שירורום";
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg);
-            font-size: 15vw; font-weight: 900; color: rgba(255, 255, 255, 0.05);
+            font-size: 15vw; font-weight: 900; color: rgba(255, 255, 255, 0.07);
             white-space: nowrap; pointer-events: none; z-index: 0;
         }
 
         #app { width: 100%; max-width: 500px; height: 100vh; margin: 0 auto; display: flex; flex-direction: column; position: relative; z-index: 1; }
-        .screen { position: absolute; inset: 0; display: none; flex-direction: column; padding: 25px; }
-        .active { display: flex !important; animation: fadeIn 0.5s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .screen { position: absolute; inset: 0; display: none; flex-direction: column; padding: 20px; }
+        .active { display: flex !important; }
         
-        /* עיצוב מסך פתיחה מכובד */
-        .hero-logo { font-size: 5.5rem; font-weight: 800; margin: 0; background: var(--logo-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; line-height: 0.9; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3)); }
-        .hero-slogan { color: white; font-size: 1.8rem; text-align: center; margin: 15px 0; font-weight: 600; letter-spacing: 1px; }
-        .hero-credit { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); border-radius: 50px; padding: 12px 30px; color: white; text-align: center; align-self: center; margin-bottom: 50px; border: 1px solid rgba(255,255,255,0.2); font-size: 1.1rem; }
-
-        .btn { padding: 18px; border-radius: 40px; border: none; background: var(--primary); color: white; font-weight: 700; cursor: pointer; width: 100%; margin: 8px 0; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; gap: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
-        .btn-outline { background: rgba(255,255,255,0.1); border: 2px solid white; color: white; }
+        .btn { padding: 15px; border-radius: 30px; border: none; background: var(--primary); color: white; font-weight: 700; cursor: pointer; width: 100%; margin: 5px 0; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .round-btn { width: 45px; height: 45px; border-radius: 50%; border: none; background: var(--glass); display: flex; align-items: center; justify-content: center; color: var(--primary); cursor: pointer; }
+        .glass-card { background: var(--glass); border-radius: 20px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.4); }
+        
+        .prompter { flex: 1; overflow-y: auto; padding: 20px; text-align: center; font-size: 32px; font-weight: 700; background: var(--glass); border-radius: 20px; color: #1e293b; white-space: pre-wrap; line-height: 1.5; scroll-behavior: smooth; }
+        .dark-mode { background: #1a1a1a !important; color: #f0f0f0 !important; }
 
-        .glass-card { background: var(--glass); border-radius: 20px; padding: 18px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.4); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        
-        .media-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .media-btn { padding: 12px; border-radius: 15px; border: none; color: white; font-size: 0.8rem; font-weight: 800; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 5px; }
-        
-        .prompter { flex: 1; overflow-y: auto; padding: 30px; text-align: center; font-size: 36px; font-weight: 700; background: var(--glass); border-radius: 30px; color: #1e293b; white-space: pre-wrap; line-height: 1.4; }
-        
-        #sticky-footer { background: rgba(0,0,0,0.1); padding: 15px; border-radius: 25px; margin-top: auto; }
-        .emoji-fly { position: absolute; bottom: -50px; font-size: 2rem; animation: flyUp 4s linear forwards; pointer-events: none; opacity: 0.6; }
-        @keyframes flyUp { 0% { transform: translateY(0) rotate(0deg); opacity: 0.6; } 100% { transform: translateY(-110vh) translateX(var(--randomX)) rotate(360deg); opacity: 0; } }
+        .emoji-fly { position: absolute; bottom: -50px; font-size: 2rem; animation: flyUp 4s linear forwards; pointer-events: none; opacity: 0.8; }
+        @keyframes flyUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-110vh) translateX(var(--randomX)); opacity: 0; } }
+
+        .credit-line { color: white; margin-top: 15px; font-size: 0.9rem; opacity: 0.9; background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; }
+        #sticky-footer { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 20px; margin-top: auto; }
+        input, textarea { width: 100%; border-radius: 15px; padding: 12px; border: none; background: var(--glass); }
     </style>
 </head>
 <body onload="initApp();">
@@ -59,88 +48,88 @@
 <div id="app">
     <div id="emoji-container" style="position: absolute; inset:0; overflow:hidden; pointer-events:none;"></div>
 
-    <div id="s1" class="screen active" style="justify-content: center;">
-        <h1 class="hero-logo">שירורום</h1>
-        <div class="hero-slogan">שרים יחד מהלב</div>
-        <div class="hero-credit">בניהולו של איתמר אושפיז</div>
+    <div id="s1" class="screen active" style="justify-content: center; text-align: center;">
+        <h1 style="font-size: 5.5rem; color: white; margin: 0; line-height: 0.8;">שירורום</h1>
+        <p style="color: white; font-size: 1.6rem; margin: 10px 0;">שרים יחד מהלב</p>
         
-        <div id="audience-box" style="display:none; width:100%;">
+        <div class="credit-line">פותח ע"י איתמר אושפיז</div>
+
+        <div id="audience-box" style="display:none; margin-top:40px; width: 100%;">
             <button class="btn" style="background:white; color:var(--primary);" onclick="nav('s4')">
-                <i class="fas fa-play-circle"></i> כניסה למופע
+                <i class="fas fa-music"></i> צפייה בשירי המופע
             </button>
         </div>
-        
-        <button class="btn btn-outline" style="margin-top:20px;" onclick="startAdmin()">
-            <i class="fas fa-user-shield"></i> ניהול מופע חדש
-        </button>
+
+        <div id="admin-init-box" style="margin-top:20px; width: 100%;">
+            <button class="btn" style="background:rgba(255,255,255,0.2); border: 1px solid white;" onclick="startAdmin()">
+                <i class="fas fa-tools"></i> ניהול מופע חדש
+            </button>
+        </div>
     </div>
 
     <div id="s2" class="screen">
-        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:15px;">
+        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:10px;">
             <button class="round-btn" onclick="nav('s1')"><i class="fas fa-home"></i></button>
-            <h2 style="color:white; margin:0;">ניהול פלייליסט</h2>
+            <h2 style="color:white; margin:0;">ניהול המופע</h2>
             <div style="width:45px;"></div>
         </div>
-        
-        <button class="btn" style="background:white; color:var(--primary);" onclick="nav('s3')">
-            <i class="fas fa-plus-circle"></i> הוסף שיר חדש
-        </button>
-        
-        <div id="adminList" style="flex:1; overflow-y:auto; margin:15px 0;"></div>
-        
+        <button class="btn" style="background:white; color:var(--primary);" onclick="nav('s3')">➕ הוסף שיר חדש</button>
+        <div id="adminList" style="flex:1; overflow-y:auto; margin:10px 0;"></div>
         <div id="sticky-footer">
-            <button class="btn" style="background:var(--orange);" onclick="copyLongLink()">
-                <i class="fas fa-link"></i> 1. העתק לינק (ארוך)
-            </button>
-            <button class="btn" style="background:var(--purple);" onclick="window.open('https://tinyurl.com','_blank')">
-                <i class="fas fa-compress-arrows-alt"></i> 2. פתח TinyURL.com
-            </button>
-            <div style="background:white; border-radius:20px; padding:10px; margin-top:10px;">
-                <input type="text" id="shortenedResult" placeholder="הדבק כאן את הלינק הקצר..." style="width:100%; border:none; padding:10px; font-size:1rem; outline:none;">
-                <button class="btn" style="background:var(--success); margin:5px 0 0 0;" onclick="shareShortLink()">
-                    <i class="fab fa-whatsapp"></i> 3. שלח בווטסאפ
-                </button>
+            <button class="btn" style="background:#f59e0b;" onclick="copyLongLink()">1. העתק לינק (ארוך)</button>
+            <button class="btn" style="background:#8b5cf6;" onclick="window.open('https://tinyurl.com','_blank')">2. פתח TinyURL.com</button>
+            <div style="background:white; border-radius:15px; padding:8px; margin-top:5px;">
+                <input type="text" id="shortLinkInput" placeholder="הדבק לינק מקוצר כאן...">
+                <button class="btn" style="background:#10b981; margin:5px 0 0 0;" onclick="shareShortLink()">3. שלח בווטסאפ</button>
             </div>
         </div>
     </div>
 
     <div id="s3" class="screen">
-        <button class="round-btn" onclick="nav('s2')"><i class="fas fa-arrow-right"></i></button>
-        <h2 style="color:white; text-align:center; margin:15px 0;">חיפוש שיר</h2>
-        <input type="text" id="searchInput" placeholder="איזה שיר נשיר?..." oninput="searchSongs(this)" style="width:100%; padding:15px; border-radius:20px; border:none; font-size:1.2rem;">
-        <div id="results" style="flex:1; overflow-y:auto; margin-top:20px;"></div>
+        <button class="round-btn" onclick="nav('s2')"><i class="fas fa-times"></i></button>
+        <input type="text" id="searchInput" placeholder="חפש שיר להוספה..." oninput="searchSongs(this)" style="margin-top:10px;">
+        <div id="results" style="flex:1; overflow-y:auto; margin-top:10px;"></div>
     </div>
 
     <div id="s_edit" class="screen">
-        <button class="round-btn" onclick="nav('s3')"><i class="fas fa-arrow-right"></i></button>
-        <h3 id="editTitle" style="color:white; text-align:center; margin:15px 0;"></h3>
-        <button class="btn" style="background:#4285F4;" onclick="searchInGoogle()"><i class="fab fa-google"></i> מצא מילים בגוגל</button>
-        <textarea id="lyricPaste" style="flex:1; margin:15px 0; border-radius:20px; padding:20px; border:none; font-size:1.1rem;" placeholder="הדבק כאן את מילות השיר..."></textarea>
-        <button class="btn" style="background:var(--success);" onclick="addSong()">שמור שיר ✅</button>
+        <h3 id="editTitle" style="color:white; text-align:center;"></h3>
+        <button class="btn" onclick="searchInGoogle()">מצא מילים בגוגל</button>
+        <textarea id="lyricPaste" style="flex:1; margin:10px 0;" placeholder="הדבק מילים..."></textarea>
+        <button class="btn" style="background:#10b981;" onclick="addSong()">שמור בסטליסט ✅</button>
     </div>
 
     <div id="s4" class="screen">
         <button class="round-btn" onclick="nav('s1')"><i class="fas fa-home"></i></button>
-        <h2 style="color:white; text-align:center; margin:20px 0;">רשימת השירים במופע</h2>
+        <h2 style="color:white; text-align:center;">שירי המופע</h2>
         <div id="audienceList" style="flex:1; overflow-y:auto;"></div>
     </div>
 
     <div id="s5" class="screen">
         <div style="display:flex; align-items: center; gap:10px; margin-bottom:10px;">
             <button class="round-btn" onclick="exitPlayer()"><i class="fas fa-times"></i></button>
-            <h4 id="pTitle" style="color:white; margin:0; flex:1; text-align:center; font-size:1.1rem;"></h4>
+            <h4 id="pTitle" style="color:white; margin:0; flex:1; text-align:center;"></h4>
         </div>
-        <div class="media-grid">
-            <button class="media-btn" style="background:#FF0000;" onclick="openMedia('yt')"><i class="fab fa-youtube"></i> YouTube</button>
-            <button class="media-btn" style="background:#334155;" onclick="openMedia('kar')"><i class="fas fa-microphone"></i> קריוקי</button>
-            <button class="media-btn" style="background:#1DB954;" onclick="openMedia('spot')"><i class="fab fa-spotify"></i> Spotify</button>
+        
+        <div id="mediaTools" class="media-grid" style="display:none;">
+            <button class="media-btn" style="background:#FF0000; padding:10px; border:none; border-radius:10px; color:white;" onclick="openMedia('yt')">YouTube</button>
+            <button class="media-btn" style="background:#334155; padding:10px; border:none; border-radius:10px; color:white;" onclick="openMedia('kar')">קריוקי</button>
+            <button class="media-btn" style="background:#1DB954; padding:10px; border:none; border-radius:10px; color:white;" onclick="openMedia('spot')">Spotify</button>
         </div>
+
+        <div class="tools-bar" style="display:flex; justify-content: space-around; background: rgba(0,0,0,0.1); padding: 8px; border-radius: 15px; margin-bottom: 10px;">
+            <button style="border:none; background:white; border-radius:8px; padding:5px 12px;" onclick="changeFont(-3)">א-</button>
+            <button style="border:none; background:white; border-radius:8px; padding:5px 12px;" onclick="changeFont(3)">א+</button>
+            <button style="border:none; background:white; border-radius:8px; padding:5px 12px;" onclick="toggleDark()"><i class="fas fa-moon"></i></button>
+            <button id="scrollBtn" style="border:none; background:white; border-radius:8px; padding:5px 12px;" onclick="toggleScroll()">גלילה</button>
+        </div>
+
         <div id="pBox" class="prompter"></div>
     </div>
 </div>
 
 <script>
-    let db = {}; let setlist = []; let curTitle = ""; let isAdmin = false;
+    let db = {}; let setlist = []; let curTitle = ""; let isAdminMode = false;
+    let fontSize = 32; let isScrolling = false; let scrollInterval;
 
     function initApp() {
         startEmojis();
@@ -152,13 +141,14 @@
                 const decoded = JSON.parse(decodeURIComponent(escape(atob(data))));
                 db = decoded.db; setlist = decoded.list;
                 document.getElementById('audience-box').style.display = 'block';
-            } catch(e) { console.error("Error decoding playlist"); }
+                document.getElementById('admin-init-box').style.display = 'none';
+            } catch(e) {}
         }
     }
 
     function startEmojis() {
         const container = document.getElementById('emoji-container');
-        const emojis = ['🎶', '🎵', '🎸', '✨', '🎤'];
+        const emojis = ['🎶', '🎸', '✨', '🎤', '🎵', '❤️'];
         setInterval(() => {
             const e = document.createElement('div');
             e.className = 'emoji-fly';
@@ -172,6 +162,7 @@
 
     function initSortable() {
         const el = document.getElementById('adminList');
+        if(!el) return;
         Sortable.create(el, { animation: 150, handle: '.song-info', onEnd: function() {
             const newList = [];
             document.querySelectorAll('.song-card').forEach(card => newList.push(card.getAttribute('data-title')));
@@ -184,6 +175,7 @@
         document.getElementById(id).classList.add('active');
         if(id === 's2') renderAdmin();
         if(id === 's4') renderAudience();
+        if(id === 's5') document.getElementById('mediaTools').style.display = isAdminMode ? 'grid' : 'none';
     }
 
     function renderAdmin() {
@@ -191,8 +183,8 @@
         setlist.forEach((s, i) => {
             const d = document.createElement('div');
             d.className = 'glass-card song-card'; d.setAttribute('data-title', s);
-            d.innerHTML = `<div class="song-info" style="flex:1" onclick="openPrompter('${s}')"><i class="fas fa-bars" style="margin-left:10px; opacity:0.3"></i><b>${i+1}.</b> ${s}</div>
-                           <i class="fas fa-trash-alt" style="color:#ef4444; padding:5px;" onclick="deleteSong('${s}')"></i>`;
+            d.innerHTML = `<div class="song-info" style="flex:1" onclick="openPrompter('${s}')"><b>${i+1}.</b> ${s}</div>
+                           <i class="fas fa-trash" style="color:#ef4444" onclick="deleteSong('${s}')"></i>`;
             list.appendChild(d);
         });
     }
@@ -214,17 +206,30 @@
         nav('s5');
     }
 
+    function changeFont(step) { fontSize += step; document.getElementById('pBox').style.fontSize = fontSize + 'px'; }
+    function toggleDark() { document.getElementById('pBox').classList.toggle('dark-mode'); }
+    function toggleScroll() {
+        if (!isScrolling) {
+            isScrolling = true;
+            document.getElementById('scrollBtn').innerText = 'עצור';
+            scrollInterval = setInterval(() => { document.getElementById('pBox').scrollTop += 1; }, 50);
+        } else {
+            isScrolling = false; clearInterval(scrollInterval);
+            document.getElementById('scrollBtn').innerText = 'גלילה';
+        }
+    }
+
     function copyLongLink() {
         const data = btoa(unescape(encodeURIComponent(JSON.stringify({db, list: setlist}))));
         const url = window.location.origin + window.location.pathname + "?show=" + data;
         navigator.clipboard.writeText(url);
-        alert("הלינק הארוך הועתק! עכשיו פתח את TinyURL והדבק אותו שם.");
+        alert("הלינק הארוך הועתק!");
     }
 
     function shareShortLink() {
-        const short = document.getElementById('shortenedResult').value;
-        if(!short) return alert("אנא הדבק קודם את הלינק המקוצר מ-TinyURL");
-        window.open(`https://wa.me/?text=${encodeURIComponent("היי! הנה רשימת המילים למופע שלנו: " + short)}`, '_blank');
+        const short = document.getElementById('shortLinkInput').value;
+        if(!short) return alert("הדבק לינק מקוצר קודם");
+        window.open(`https://wa.me/?text=${encodeURIComponent("בואו לשיר יחד! הנה הפלייליסט שלנו: " + short)}`, '_blank');
     }
 
     function openMedia(type) {
@@ -241,8 +246,8 @@
         const res = document.getElementById('results'); res.innerHTML = '';
         d.results.forEach(t => {
             const div = document.createElement('div'); div.className = 'glass-card';
-            div.innerHTML = `<div><b>${t.trackName}</b><br><small>${t.artistName}</small></div> <i class="fas fa-plus-circle"></i>`;
-            div.onclick = () => { curTitle = t.trackName + " - " + t.artistName; document.getElementById('editTitle').innerText = curTitle; nav('s_edit'); };
+            div.innerHTML = `<b>${t.trackName}</b> ➕`;
+            div.onclick = () => { curTitle = t.trackName; document.getElementById('editTitle').innerText = curTitle; nav('s_edit'); };
             res.appendChild(div);
         });
     }
@@ -250,14 +255,13 @@
     function addSong() {
         db[curTitle] = document.getElementById('lyricPaste').value;
         if(!setlist.includes(curTitle)) setlist.push(curTitle);
-        document.getElementById('lyricPaste').value = "";
         nav('s2');
     }
 
-    function deleteSong(t) { if(confirm("למחוק את השיר?")) { setlist = setlist.filter(s => s !== t); renderAdmin(); } }
+    function deleteSong(t) { setlist = setlist.filter(s => s !== t); renderAdmin(); }
     function searchInGoogle() { window.open(`https://www.google.com/search?q=${encodeURIComponent(curTitle)}+מילים`, '_blank'); }
-    function startAdmin() { isAdmin = true; nav('s2'); }
-    function exitPlayer() { if(isAdmin) nav('s2'); else nav('s4'); }
+    function startAdmin() { isAdminMode = true; nav('s2'); }
+    function exitPlayer() { if(isAdminMode) nav('s2'); else nav('s4'); }
 </script>
 </body>
 </html>
