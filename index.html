@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>שירורום | איתמר אושפיז</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
+        :root { 
+            --sky-grad: linear-gradient(135deg, #0c4a6e 0%, #0ea5e9 50%, #f0f9ff 100%);
+            --logo-grad: linear-gradient(to bottom, #ffffff 20%, #e0f2fe 100%);
+            --glass: rgba(255, 255, 255, 0.88);
+            --primary: #0369a1;
+            --youtube: #FF0000; --spotify: #1DB954; --karaoke: #334155; --google: #4285F4;
+        }
+        * { box-sizing: border-box; transition: 0.4s; font-family: 'Varela Round', sans-serif; }
+        body, html { margin: 0; padding: 0; height: 100%; background: var(--sky-grad); background-attachment: fixed; overflow: hidden; }
+        #app { width: 100%; max-width: 500px; height: 100vh; margin: 0 auto; display: flex; flex-direction: column; position: relative; }
+        .screen { position: absolute; inset: 0; display: none; flex-direction: column; padding: 25px; z-index: 1; }
+        .active { display: flex !important; animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .emoji-stream { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); pointer-events: none; z-index: 10; }
+        .floating-emoji { position: absolute; bottom: 0; font-size: 1.5rem; animation: flyUp 3s linear forwards; }
+        @keyframes flyUp { 0% { transform: translateY(0); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(-400px) translateX(var(--x)); opacity: 0; } }
+        
+        .main-logo { font-size: 5.8rem; font-weight: 800; margin: 0; background: var(--logo-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; line-height: 0.9; }
+        .slogan { color: white; font-size: 1.8rem; text-align: center; margin-bottom: 20px; }
+        .glass-card { background: var(--glass); backdrop-filter: blur(15px); border-radius: 25px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.4); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .btn { padding: 18px; border-radius: 25px; border: none; background: var(--primary); color: white; font-weight: 700; cursor: pointer; width: 100%; margin: 8px 0; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-white { background: white; color: var(--primary); }
+        .round { width: 45px; height: 45px; border-radius: 50%; border: none; background: var(--glass); display: flex; align-items: center; justify-content: center; }
+        
+        .media-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 10px 0; }
+        .media-btn { padding: 12px; border-radius: 15px; border: none; color: white; font-size: 0.8rem; font-weight: 800; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        
+        .prompter { flex: 1; overflow-y: auto; padding: 30px; text-align: center; font-size: 38px; font-weight: 700; line-height: 1.6; background: var(--glass); border-radius: 30px; margin: 15px 0; }
+        .code-display { font-size: 2.2rem; font-weight: 800; color: #166534; background: #dcfce7; padding: 15px; border-radius: 20px; margin: 10px 0; text-align: center; border: 2px dashed #166534; }
+    </style>
+</head>
+<body onload="startEmojiStream();">
+
+<div id="app">
+    <div id="emoji-container" class="emoji-stream"></div>
+
+    <div id="s1" class="screen active" style="justify-content: center;">
+        <h1 class="main-logo">שירורום</h1>
+        <div class="slogan">המופע של איתמר</div>
+        <button class="btn btn-white" onclick="nav('s_join')">צפייה במופע (יש לי קוד)</button>
+        <button class="btn" style="background:rgba(255,255,255,0.2);" onclick="nav('s2')">ניהול והקמת מופע</button>
+    </div>
+
+    <div id="s_join" class="screen">
+        <button class="round" onclick="nav('s1')">←</button>
+        <h2 style="color:white; text-align:center;">הכנס קוד מופע</h2>
+        <input type="text" id="joinCode" class="glass-card" style="width:100%; text-align:center; font-size:1.8rem; text-transform: uppercase;" placeholder="הקוד כאן">
+        <button id="loadBtn" class="btn" onclick="loadByCode()">התחבר וטען שירים 🎶</button>
+    </div>
+
+    <div id="s2" class="screen">
+        <button class="round" onclick="nav('s1')">←</button>
+        <h2 style="color:white; text-align:center;">ניהול הסטליסט</h2>
+        <button class="btn btn-white" onclick="nav('s3')">+ הוסף שיר חדש</button>
+        <div id="adminList" style="flex:1; overflow-y:auto; margin:10px 0;"></div>
+        <button id="saveBtn" class="btn" style="background:#25D366;" onclick="saveAndGetCode()">שמור וקבל קוד לחברים</button>
+    </div>
+
+    <div id="s_code" class="screen" style="justify-content: center;">
+        <div class="glass-card" style="text-align: center;">
+            <h3 style="margin-top:0;">המופע נשמר! ✅</h3>
+            <p>תן לחברים את הקוד הזה:</p>
+            <div id="displayCode" class="code-display">----</div>
+            <p style="font-size:0.9rem;">הם פותחים את האפליקציה,<br>לוחצים "צפייה" ומקישים אותו.</p>
+            <button class="btn" onclick="nav('s2')">חזור לניהול</button>
+        </div>
+    </div>
+
+    <div id="s3" class="screen">
+        <button class="round" onclick="nav('s2')">←</button>
+        <input type="text" id="searchInput" class="glass-card" style="width:100%; margin-top:15px; text-align:center;" placeholder="חפש שיר..." oninput="searchSongs(this)">
+        <div id="results" style="flex:1; overflow-y:auto;"></div>
+    </div>
+
+    <div id="s_edit" class="screen">
+        <button class="round" onclick="nav('s3')">←</button>
+        <h3 id="editTitle" style="color:white; text-align:center;"></h3>
+        <div class="media-grid">
+            <button class="media-btn" style="background:var(--youtube);" onclick="openMedia('yt')">YouTube</button>
+            <button class="media-btn" style="background:var(--karaoke);" onclick="openMedia('kar')">קריוקי</button>
+            <button class="media-btn" style="background:var(--spotify);" onclick="openMedia('spot')">Spotify</button>
+        </div>
+        <button class="btn" style="background:var(--google);" onclick="openGoogle()">
+            <i class="fab fa-google"></i> מצא מילים בגוגל
+        </button>
+        <textarea id="lyricPaste" class="glass-card" style="flex:1; width:100%; font-size:1.1rem;" placeholder="הדבק מילים כאן..."></textarea>
+        <button class="btn" onclick="saveSong()">שמור שיר בסטליסט ✅</button>
+    </div>
+
+    <div id="s4" class="screen">
+        <button class="round" onclick="nav('s1')">←</button>
+        <h2 style="color:white; text-align:center;">רשימת השירים</h2>
+        <div id="audienceList" style="flex:1; overflow-y:auto;"></div>
+    </div>
+
+    <div id="s5" class="screen">
+        <button class="round" onclick="nav('s4')">←</button>
+        <h3 id="pTitle" style="color:white; text-align:center;"></h3>
+        <div id="pBox" class="prompter"></div>
+        <div style="display:flex; justify-content:center; gap:15px;">
+            <button class="round" onclick="adjFs(-4)">A-</button>
+            <button class="btn btn-white" style="width:140px; margin:0;" onclick="togglePlay()" id="playBtn">PLAY ▶</button>
+            <button class="round" onclick="adjFs(4)">A+</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let db = {}; let setlist = []; let curTitle = ""; let scInt; let fontSize = 38;
+    const MASTER_KEY = '$2b$10$5p8oH3q8I1Y6e6qJ6.eGvO3R/u7.N2lC3fA4uUjE5B7pG0r/FfW.O';
+
+    function nav(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        if(id === 's2') renderAdminList();
+        if(id === 's4') renderAudienceList();
+        clearInterval(scInt);
+    }
+
+    async function saveAndGetCode() {
+        if(setlist.length === 0) return alert("הוסף שירים קודם");
+        const btn = document.getElementById('saveBtn'); 
+        btn.innerText = "שומר בענן... ⏳"; btn.disabled = true;
+        try {
+            const res = await fetch('https://api.jsonbin.io/v3/b', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-Master-Key': MASTER_KEY },
+                body: JSON.stringify({ db, list: setlist })
+            });
+            const data = await res.json();
+            const fullId = data.metadata.id;
+            document.getElementById('displayCode').innerText = fullId;
+            nav('s_code');
+        } catch(e) { alert("שגיאה בשמירה"); }
+        btn.innerText = "שמור וקבל קוד לחברים"; btn.disabled = false;
+    }
+
+    async function loadByCode() {
+        const code = document.getElementById('joinCode').value.trim();
+        if(!code) return alert("הכנס קוד");
+        const btn = document.getElementById('loadBtn');
+        btn.innerText = "מושך נתונים... ⏳";
+        try {
+            const res = await fetch(`https://api.jsonbin.io/v3/b/${code}/latest`, {
+                headers: { 'X-Master-Key': MASTER_KEY }
+            });
+            if(!res.ok) throw new Error();
+            const data = await res.json();
+            db = data.record.db; setlist = data.record.list;
+            nav('s4');
+        } catch(e) { alert("הקוד לא נמצא. וודא שהעתקת נכון."); }
+        btn.innerText = "התחבר וטען שירים 🎶";
+    }
+
+    async function searchSongs(el) {
+        if(el.value.length < 2) return;
+        const r = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(el.value)}&entity=song&limit=5&country=il`);
+        const d = await r.json();
+        const res = document.getElementById('results'); res.innerHTML = '';
+        d.results.forEach(t => {
+            const div = document.createElement('div'); div.className = 'glass-card';
+            div.innerHTML = `<b>${t.trackName}</b><br><small>${t.artistName}</small>`;
+            div.onclick = () => { curTitle = t.trackName + " - " + t.artistName; document.getElementById('editTitle').innerText = curTitle; nav('s_edit'); };
+            res.appendChild(div);
+        });
+    }
+
+    function saveSong() {
+        const lyr = document.getElementById('lyricPaste').value;
+        if(!lyr.trim()) return;
+        db[curTitle] = lyr; if(!setlist.includes(curTitle)) setlist.push(curTitle);
+        document.getElementById('lyricPaste').value = "";
+        nav('s2');
+    }
+
+    function renderAdminList() {
+        const list = document.getElementById('adminList'); list.innerHTML = '';
+        setlist.forEach((s, i) => {
+            const d = document.createElement('div'); d.className = 'glass-card';
+            d.innerHTML = `<span style="flex:1" onclick="preview(${i})"><b>${i+1}.</b> ${s}</span><button style="border:none; background:none; color:red; font-size:1.2rem;" onclick="removeSong(${i})">✕</button>`;
+            list.appendChild(d);
+        });
+    }
+
+    function removeSong(i) { setlist.splice(i, 1); renderAdminList(); }
+    function preview(i) { document.getElementById('pTitle').innerText = setlist[i]; document.getElementById('pBox').innerText = db[setlist[i]]; nav('s5'); }
+
+    function renderAudienceList() {
+        const list = document.getElementById('audienceList'); list.innerHTML = '';
+        setlist.forEach((s, i) => {
+            const d = document.createElement('div'); d.className = 'glass-card';
+            d.innerHTML = `<b>${s}</b>`; d.onclick = () => preview(i);
+            list.appendChild(d);
+        });
+    }
+
+    function togglePlay() {
+        const btn = document.getElementById('playBtn'); const box = document.getElementById('pBox');
+        if(scInt) { clearInterval(scInt); scInt = null; btn.innerText = "PLAY ▶"; }
+        else { btn.innerText = "STOP ⏸"; scInt = setInterval(() => box.scrollTop += 1, 50); }
+    }
+
+    function adjFs(v) { fontSize += v; document.getElementById('pBox').style.fontSize = fontSize + 'px'; }
+    function openGoogle() { window.open(`https://www.google.com/search?q=${encodeURIComponent(curTitle + " מילים")}`, '_blank'); }
+    function openMedia(t) {
+        let u = t==='yt' ? `https://www.youtube.com/results?search_query=${curTitle}` : (t==='kar' ? `https://www.youtube.com/results?search_query=${curTitle}+קריוקי` : `spotify:search:${curTitle}`);
+        window.open(u, '_blank');
+    }
+
+    function startEmojiStream() {
+        const container = document.getElementById('emoji-container');
+        setInterval(() => {
+            const el = document.createElement('div'); el.className = 'floating-emoji';
+            el.innerText = ['❤️', '🎵', '🎶', '✨', '👏'][Math.floor(Math.random()*5)];
+            el.style.setProperty('--x', (Math.random()*150-75)+'px'); el.style.left = '50%';
+            container.appendChild(el); setTimeout(() => el.remove(), 3000);
+        }, 600);
+    }
+</script>
+</body>
+</html>
