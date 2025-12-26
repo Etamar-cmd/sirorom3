@@ -7,32 +7,123 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
+        
         :root { 
             --sky-grad: linear-gradient(135deg, #0c4a6e 0%, #0ea5e9 50%, #f0f9ff 100%);
             --logo-grad: linear-gradient(to bottom, #ffffff 20%, #e0f2fe 100%);
             --glass: rgba(255, 255, 255, 0.94);
             --primary: #0369a1;
+            --accent: #2563eb;
             --youtube: #FF0000; --spotify: #1DB954; --karaoke: #334155;
         }
-        * { box-sizing: border-box; transition: 0.3s; font-family: 'Varela Round', sans-serif; }
-        body, html { margin: 0; padding: 0; height: 100%; background: var(--sky-grad); background-attachment: fixed; overflow: hidden; }
-        #app { width: 100%; max-width: 500px; height: 100vh; margin: 0 auto; display: flex; flex-direction: column; position: relative; }
-        .screen { position: absolute; inset: 0; display: none; flex-direction: column; padding: 20px; z-index: 1; }
-        .active { display: flex !important; animation: fadeIn 0.2s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        * { box-sizing: border-box; transition: 0.3s; font-family: 'Varela Round', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        .main-logo { font-size: 5rem; font-weight: 800; margin: 0; background: var(--logo-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; line-height: 0.9; }
-        .slogan { color: white; font-size: 1.5rem; text-align: center; margin-bottom: 15px; }
-        .glass-card { background: var(--glass); backdrop-filter: blur(15px); border-radius: 20px; padding: 15px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.4); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-        .btn { padding: 15px; border-radius: 25px; border: none; background: var(--primary); color: white; font-weight: 700; cursor: pointer; width: 100%; margin: 8px 0; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        body, html { 
+            margin: 0; padding: 0; height: 100%; 
+            background: var(--sky-grad); 
+            background-attachment: fixed; 
+            overflow: hidden; 
+        }
+
+        #app { 
+            width: 100%; max-width: 500px; height: 100vh; 
+            margin: 0 auto; display: flex; flex-direction: column; 
+            position: relative; 
+        }
+
+        .screen { 
+            position: absolute; inset: 0; display: none; 
+            flex-direction: column; padding: 25px; z-index: 1; 
+        }
+
+        .active { display: flex !important; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* עיצוב לוגו וטקסט */
+        .main-logo { 
+            font-size: 5.5rem; font-weight: 800; margin: 0; 
+            background: var(--logo-grad); -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; text-align: center; 
+            line-height: 0.8; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2));
+        }
+        
+        .slogan { color: white; font-size: 1.6rem; text-align: center; margin-bottom: 20px; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+
+        .credit-box {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 10px 20px;
+            color: white;
+            font-size: 0.9rem;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.3);
+            align-self: center;
+            margin-bottom: 30px;
+        }
+
+        /* כפתורים וכרטיסיות */
+        .glass-card { 
+            background: var(--glass); backdrop-filter: blur(15px); 
+            border-radius: 20px; padding: 20px; margin-bottom: 15px; 
+            border: 1px solid rgba(255,255,255,0.4); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+        }
+
+        .btn { 
+            padding: 18px; border-radius: 30px; border: none; 
+            background: var(--primary); color: white; font-weight: 700; 
+            cursor: pointer; width: 100%; margin: 10px 0; 
+            font-size: 1.2rem; display: flex; align-items: center; 
+            justify-content: center; gap: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:active { transform: scale(0.96); }
         .btn-white { background: white; color: var(--primary); }
-        .round { width: 45px; height: 45px; border-radius: 50%; border: none; background: var(--glass); display: flex; align-items: center; justify-content: center; cursor: pointer; }
         
-        .media-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-        .media-btn { padding: 10px; border-radius: 12px; border: none; color: white; font-size: 0.75rem; font-weight: 800; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        
-        .prompter { flex: 1; overflow-y: auto; padding: 25px; text-align: center; font-size: 38px; font-weight: 700; line-height: 1.6; background: var(--glass); border-radius: 25px; margin: 10px 0; }
-        #sticky-footer { position: sticky; bottom: 0; padding: 10px 0; }
+        .round-btn { 
+            width: 50px; height: 50px; border-radius: 50%; border: none; 
+            background: var(--glass); display: flex; align-items: center; 
+            justify-content: center; cursor: pointer; color: var(--primary);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* רשימות שירים */
+        .song-item {
+            background: var(--glass);
+            padding: 15px 20px;
+            border-radius: 18px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-right: 5px solid var(--accent);
+            cursor: pointer;
+        }
+
+        /* מצב מקרן */
+        .prompter { 
+            flex: 1; overflow-y: auto; padding: 30px; text-align: center; 
+            font-size: 38px; font-weight: 700; line-height: 1.6; 
+            background: var(--glass); border-radius: 25px; margin: 15px 0; 
+            color: #1e293b;
+        }
+
+        .media-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .media-btn { 
+            padding: 12px; border-radius: 15px; border: none; color: white; 
+            font-size: 0.8rem; font-weight: 800; display: flex; 
+            flex-direction: column; align-items: center; gap: 5px; 
+        }
+
+        #sticky-footer { position: sticky; bottom: 0; padding: 10px 0; background: transparent; }
+
+        input, textarea {
+            width: 100%; background: var(--glass); border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 15px; padding: 15px; font-size: 1rem; outline: none;
+        }
     </style>
 </head>
 <body onload="initApp();">
@@ -41,65 +132,73 @@
     <div id="s1" class="screen active" style="justify-content: center;">
         <h1 class="main-logo">שירורום</h1>
         <div class="slogan">זמר שירה בציבור</div>
-        <div class="glass-card" style="text-align:center; padding:10px; font-weight:bold;">פותח ע"י איתמר אושפיז</div>
-        <button class="btn" style="background:rgba(255,255,255,0.2); margin-top:30px;" onclick="startAdmin()">הקמת מופע חדש 🛠️</button>
-        <div id="audience-box" style="display:none; margin-top:20px;">
-            <button class="btn btn-white" onclick="nav('s4')">לסטליסט המופע 🎶</button>
+        <div class="credit-box">פותח ע"י איתמר אושפיז</div>
+        
+        <button class="btn" style="background:rgba(255,255,255,0.2);" onclick="startAdmin()">הקמת מופע חדש 🛠️</button>
+        
+        <div id="audience-box" style="display:none; margin-top:10px; width:100%;">
+            <button class="btn btn-white" onclick="nav('s4')">כניסה למופע 🎶</button>
         </div>
     </div>
 
     <div id="s2" class="screen">
-        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:10px;">
-            <button class="round" onclick="nav('s1')">←</button>
-            <h2 style="color:white; margin:0;">הניהול שלי</h2>
+        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:15px;">
+            <button class="round-btn" onclick="nav('s1')"><i class="fas fa-home"></i></button>
+            <h2 style="color:white; margin:0;">ניהול סטליסט</h2>
         </div>
-        <button class="btn btn-white" onclick="nav('s3')">+ הוסף שיר</button>
-        <div id="adminList" style="flex:1; overflow-y:auto; margin:10px 0;"></div>
+        <button class="btn btn-white" onclick="nav('s3')"><i class="fas fa-plus"></i> הוסף שיר למופע</button>
+        <div id="adminList" style="flex:1; overflow-y:auto; margin:15px 0;"></div>
         <div id="sticky-footer">
-            <button id="saveBtn" class="btn" style="background:#25D366;" onclick="generateLink()">צור לינק לשיתוף 🚀</button>
-        </div>
-    </div>
-
-    <div id="s_link" class="screen" style="justify-content: center;">
-        <div class="glass-card" style="text-align: center;">
-            <h3 style="color:var(--primary);">המופע מוכן!</h3>
-            <p>שלח את הלינק הזה לחברים:</p>
-            <textarea id="shareURL" class="glass-card" style="width:100%; height:100px; font-size:0.7rem;" readonly></textarea>
-            <button class="btn" onclick="copyURL()">העתק ושלח בווטסאפ</button>
-            <button class="btn btn-white" onclick="nav('s2')">חזור לעריכה</button>
+            <button id="saveBtn" class="btn" style="background:#10b981;" onclick="generateShareLink()">
+                <i class="fab fa-whatsapp"></i> שלח לינק לחברים
+            </button>
         </div>
     </div>
 
     <div id="s3" class="screen">
-        <button class="round" onclick="nav('s2')">←</button>
-        <input type="text" id="searchInput" class="glass-card" style="width:100%; margin-top:15px; text-align:center;" placeholder="חפש שם שיר..." oninput="searchSongs(this)">
-        <div id="results" style="flex:1; overflow-y:auto;"></div>
+        <button class="round-btn" onclick="nav('s2')"><i class="fas fa-arrow-right"></i></button>
+        <h3 style="color:white; text-align:center;">חיפוש שיר</h3>
+        <input type="text" id="searchInput" placeholder="חפש שם שיר או זמר..." oninput="searchSongs(this)">
+        <div id="results" style="flex:1; overflow-y:auto; margin-top:15px;"></div>
     </div>
 
     <div id="s_edit" class="screen">
-        <button class="round" onclick="nav('s3')">←</button>
+        <button class="round-btn" onclick="nav('s3')"><i class="fas fa-arrow-right"></i></button>
         <h3 id="editTitle" style="color:white; text-align:center;"></h3>
-        <textarea id="lyricPaste" class="glass-card" style="flex:1; width:100%; font-size:1.1rem;" placeholder="הדבק כאן את המילים..."></textarea>
-        <button class="btn" onclick="addSongToList()">שמור בסטליסט ✅</button>
+        <textarea id="lyricPaste" style="flex:1; margin:15px 0;" placeholder="הדבק כאן את מילות השיר..."></textarea>
+        <button class="btn" onclick="addSongToSet()"><i class="fas fa-check"></i> שמור בסטליסט</button>
     </div>
 
     <div id="s4" class="screen">
-        <button class="round" onclick="nav('s1')">←</button>
+        <button class="round-btn" onclick="nav('s1')"><i class="fas fa-home"></i></button>
         <h2 style="color:white; text-align:center;">שירי המופע</h2>
         <div id="audienceList" style="flex:1; overflow-y:auto;"></div>
     </div>
 
     <div id="s5" class="screen">
         <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:10px;">
-            <button class="round" onclick="exitPlayer()">← חזרה</button>
-            <h4 id="pTitle" style="color:white; margin:0; font-size:1rem; flex:1; text-align:center;"></h4>
+            <button class="round-btn" onclick="exitPlayer()"><i class="fas fa-times"></i></button>
+            <h4 id="pTitle" style="color:white; margin:0; font-size:1.1rem; flex:1; text-align:center;"></h4>
         </div>
-        <div class="media-grid">
-            <button class="media-btn" style="background:var(--youtube);" onclick="openMedia('yt')">YouTube</button>
-            <button class="media-btn" style="background:var(--karaoke);" onclick="openMedia('kar')">קריוקי</button>
-            <button class="media-btn" style="background:var(--spotify);" onclick="openMedia('spot')">Spotify</button>
+        
+        <div class="media-grid" id="mediaControls">
+            <button class="media-btn" style="background:var(--youtube);" onclick="openMedia('yt')"><i class="fab fa-youtube"></i> YouTube</button>
+            <button class="media-btn" style="background:var(--karaoke);" onclick="openMedia('kar')"><i class="fas fa-microphone"></i> קריוקי</button>
+            <button class="media-btn" style="background:var(--spotify);" onclick="openMedia('spot')"><i class="fab fa-spotify"></i> Spotify</button>
         </div>
+
         <div id="pBox" class="prompter"></div>
+    </div>
+
+    <div id="s_share" class="screen" style="justify-content: center;">
+        <div class="glass-card" style="text-align: center;">
+            <i class="fas fa-paper-plane" style="font-size:3rem; color:var(--primary); margin-bottom:15px;"></i>
+            <h3>הלינק מוכן!</h3>
+            <p>העתק את הלינק ושלח אותו לחברים בווטסאפ. הם יראו רק את רשימת השירים.</p>
+            <textarea id="shareURL" style="height:80px; font-size:0.7rem; margin-bottom:15px;" readonly></textarea>
+            <button class="btn" onclick="copyURL()">העתק ושלח בווטסאפ 📱</button>
+            <button class="btn btn-white" onclick="nav('s2')">חזור לניהול</button>
+        </div>
     </div>
 </div>
 
@@ -114,8 +213,9 @@
                 const decoded = JSON.parse(decodeURIComponent(escape(atob(data))));
                 db = decoded.db; setlist = decoded.list;
                 document.getElementById('audience-box').style.display = 'block';
+                // אם הגענו מלינק, אנחנו בגרסת קהל
                 nav('s4');
-            } catch(e) { console.log("New show mode"); }
+            } catch(e) { console.log("New Session"); }
         }
     }
 
@@ -129,46 +229,35 @@
     function startAdmin() { isAdmin = true; nav('s2'); }
     function exitPlayer() { if(isAdmin) nav('s2'); else nav('s4'); }
 
-    function addSongToList() {
-        db[curTitle] = document.getElementById('lyricPaste').value;
-        if(!setlist.includes(curTitle)) setlist.push(curTitle);
-        document.getElementById('lyricPaste').value = "";
-        nav('s2');
-    }
-
-    function generateLink() {
-        const data = btoa(unescape(encodeURIComponent(JSON.stringify({db, list: setlist}))));
-        const url = window.location.origin + window.location.pathname + "?show=" + data;
-        document.getElementById('shareURL').value = url;
-        nav('s_link');
-    }
-
-    function copyURL() {
-        const el = document.getElementById('shareURL');
-        el.select();
-        navigator.clipboard.writeText(el.value);
-        alert("הלינק הועתק! שלח אותו לחברים בווטסאפ.");
-    }
-
     async function searchSongs(el) {
         if(el.value.length < 2) return;
-        const r = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(el.value)}&entity=song&limit=5&country=il`);
+        const r = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(el.value)}&entity=song&limit=6&country=il`);
         const d = await r.json();
         const res = document.getElementById('results'); res.innerHTML = '';
         d.results.forEach(t => {
             const div = document.createElement('div'); div.className = 'glass-card';
+            div.style.padding = '12px';
             div.innerHTML = `<b>${t.trackName}</b><br><small>${t.artistName}</small>`;
             div.onclick = () => { curTitle = t.trackName + " - " + t.artistName; document.getElementById('editTitle').innerText = curTitle; nav('s_edit'); };
             res.appendChild(div);
         });
     }
 
+    function addSongToSet() {
+        const lyr = document.getElementById('lyricPaste').value;
+        if(!lyr.trim()) return alert("נא להדביק מילים");
+        db[curTitle] = lyr;
+        if(!setlist.includes(curTitle)) setlist.push(curTitle);
+        document.getElementById('lyricPaste').value = "";
+        nav('s2');
+    }
+
     function renderAdmin() {
         const list = document.getElementById('adminList'); list.innerHTML = '';
         setlist.forEach((s, i) => {
-            const d = document.createElement('div'); d.className = 'glass-card';
-            d.innerHTML = `<b>${i+1}.</b> ${s}`;
-            d.onclick = () => { curTitle = s; document.getElementById('pTitle').innerText = s; document.getElementById('pBox').innerText = db[s]; nav('s5'); };
+            const d = document.createElement('div'); d.className = 'song-item';
+            d.innerHTML = `<span><b>${i+1}.</b> ${s}</span> <i class="fas fa-chevron-left" style="opacity:0.3"></i>`;
+            d.onclick = () => showSong(s);
             list.appendChild(d);
         });
     }
@@ -176,11 +265,34 @@
     function renderAudience() {
         const list = document.getElementById('audienceList'); list.innerHTML = '';
         setlist.forEach(s => {
-            const d = document.createElement('div'); d.className = 'glass-card';
-            d.innerHTML = `<b>${s}</b>`;
-            d.onclick = () => { curTitle = s; document.getElementById('pTitle').innerText = s; document.getElementById('pBox').innerText = db[s]; nav('s5'); };
+            const d = document.createElement('div'); d.className = 'song-item';
+            d.innerHTML = `<span>${s}</span> <i class="fas fa-music" style="color:var(--primary)"></i>`;
+            d.onclick = () => showSong(s);
             list.appendChild(d);
         });
+    }
+
+    function showSong(title) {
+        curTitle = title;
+        document.getElementById('pTitle').innerText = title;
+        document.getElementById('pBox').innerText = db[title];
+        // מנהל רואה כפתורי מדיה, קהל לא (אופציונלי - כרגע פתוח לכולם)
+        nav('s5');
+    }
+
+    function generateShareLink() {
+        if(setlist.length === 0) return alert("הוסף שירים קודם");
+        const data = btoa(unescape(encodeURIComponent(JSON.stringify({db, list: setlist}))));
+        const url = window.location.origin + window.location.pathname + "?show=" + data;
+        document.getElementById('shareURL').value = url;
+        nav('s_share');
+    }
+
+    function copyURL() {
+        const el = document.getElementById('shareURL');
+        el.select();
+        navigator.clipboard.writeText(el.value);
+        alert("הלינק הועתק! עכשיו שלח אותו לחברים.");
     }
 
     function openMedia(type) {
