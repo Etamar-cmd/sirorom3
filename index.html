@@ -14,23 +14,17 @@
             --glass: rgba(255, 255, 255, 0.94);
             --primary: #0369a1;
             --success: #10b981;
+            --tiny: #f59e0b;
+            --load: #6366f1;
         }
         * { box-sizing: border-box; transition: 0.3s; font-family: 'Varela Round', sans-serif; -webkit-tap-highlight-color: transparent; }
         body, html { margin: 0; padding: 0; height: 100%; background: var(--sky-grad); background-attachment: fixed; overflow: hidden; position: relative; }
         
-        /* סימן המים ברקע */
         body::before {
             content: "שירורום";
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-30deg);
-            font-size: 15vw;
-            font-weight: 900;
-            color: rgba(255, 255, 255, 0.07); /* שקיפות עדינה מאוד */
-            white-space: nowrap;
-            pointer-events: none;
-            z-index: 0;
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 15vw; font-weight: 900; color: rgba(255, 255, 255, 0.07);
+            white-space: nowrap; pointer-events: none; z-index: 0;
         }
 
         #app { width: 100%; max-width: 500px; height: 100vh; margin: 0 auto; display: flex; flex-direction: column; position: relative; z-index: 1; }
@@ -46,17 +40,16 @@
         .round-btn { width: 45px; height: 45px; border-radius: 50%; border: none; background: var(--glass); display: flex; align-items: center; justify-content: center; color: var(--primary); cursor: pointer; }
 
         .glass-card { background: var(--glass); border-radius: 20px; padding: 15px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.4); display: flex; justify-content: space-between; align-items: center; }
-        
-        .media-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px; }
-        .media-btn { padding: 10px; border-radius: 12px; border: none; color: white; font-size: 0.75rem; font-weight: 800; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
-
         .prompter { flex: 1; overflow-y: auto; padding: 25px; text-align: center; font-size: 34px; font-weight: 700; line-height: 1.5; background: var(--glass); border-radius: 25px; margin: 10px 0; color: #1e293b; white-space: pre-wrap; }
         
+        #sticky-footer { position: sticky; bottom: 0; padding: 5px 0; width: 100%; background: transparent; }
+        input, textarea { width: 100%; border: none; border-radius: 15px; padding: 15px; background: var(--glass); font-size: 1.1rem; }
+        
+        .media-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+        .media-btn { padding: 12px; border-radius: 12px; border: none; color: white; font-size: 1rem; cursor: pointer; }
+
         .emoji-fly { position: absolute; bottom: -50px; font-size: 2rem; animation: flyUp 4s linear forwards; pointer-events: none; }
         @keyframes flyUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-110vh) translateX(var(--randomX)); opacity: 0; } }
-        
-        #sticky-footer { position: sticky; bottom: 0; padding: 5px 0; width: 100%; }
-        input, textarea { width: 100%; border: none; border-radius: 15px; padding: 15px; background: var(--glass); font-size: 1.1rem; }
     </style>
 </head>
 <body onload="initApp();">
@@ -75,16 +68,22 @@
     </div>
 
     <div id="s2" class="screen">
-        <div style="display:grid; grid-template-columns: 45px 1fr 45px; align-items: center; margin-bottom:15px;">
+        <div style="display:grid; grid-template-columns: 45px 1fr 45px; align-items: center; margin-bottom:10px;">
             <button class="round-btn" onclick="nav('s1')"><i class="fas fa-home"></i></button>
-            <h2 style="color:white; margin:0; text-align:center; font-size:1.4rem;">ניהול פלייליסט</h2>
+            <h2 style="color:white; margin:0; text-align:center; font-size:1.4rem;">ניהול</h2>
             <div></div>
         </div>
         <button class="btn" style="background:white; color:var(--primary);" onclick="nav('s3')"><i class="fas fa-plus-circle"></i> הוסף שיר</button>
-        <div id="adminList" style="flex:1; overflow-y:auto; margin:10px 0;"></div>
+        <div id="adminList" style="flex:1; overflow-y:auto; margin:5px 0;"></div>
         <div id="sticky-footer">
             <button class="btn" style="background:var(--success);" onclick="generateLink()">
-                <i class="fab fa-whatsapp"></i> שלח לינק לחברים
+                <i class="fab fa-whatsapp"></i> שלח לינק ארוך (ישיר)
+            </button>
+            <button id="tinyBtn" class="btn" style="background:var(--tiny); display:none;" onclick="openTinyURL()">
+                <i class="fas fa-compress-alt"></i> 1. צור קישור ב-TinyURL
+            </button>
+            <button id="smartShareBtn" class="btn" style="background:var(--load);" onclick="handleSmartShare()">
+                <i class="fas fa-paper-plane"></i> 2. הזן לינק מקוצר והפץ
             </button>
         </div>
     </div>
@@ -120,26 +119,16 @@
             <h4 id="pTitle" style="color:white; margin:0; flex:1; text-align:center; font-size:1rem;"></h4>
         </div>
         <div class="media-grid">
-            <button class="media-btn" style="background:#FF0000;" onclick="openMedia('yt')"><i class="fab fa-youtube"></i> YouTube</button>
-            <button class="media-btn" style="background:#334155;" onclick="openMedia('kar')"><i class="fas fa-microphone"></i> קריוקי</button>
-            <button class="media-btn" style="background:#1DB954;" onclick="openMedia('spot')"><i class="fab fa-spotify"></i> Spotify</button>
+            <button class="media-btn" style="background:#FF0000;" onclick="openMedia('yt')"><i class="fab fa-youtube"></i></button>
+            <button class="media-btn" style="background:#334155;" onclick="openMedia('kar')"><i class="fas fa-microphone"></i></button>
+            <button class="media-btn" style="background:#1DB954;" onclick="openMedia('spot')"><i class="fab fa-spotify"></i></button>
         </div>
         <div id="pBox" class="prompter"></div>
-    </div>
-
-    <div id="s_link" class="screen" style="justify-content: center;">
-        <div class="glass-card" style="flex-direction:column; text-align: center; gap:15px;">
-            <i class="fas fa-check-circle" style="font-size:3rem; color:var(--success);"></i>
-            <h3>המופע מוכן!</h3>
-            <textarea id="shareURL" style="width:100%; height:80px; font-size:0.7rem;" readonly></textarea>
-            <button class="btn" onclick="copyURL()">העתק ושלח בווטסאפ</button>
-            <button class="btn" style="background:white; color:var(--primary);" onclick="nav('s2')">חזור לניהול</button>
-        </div>
     </div>
 </div>
 
 <script>
-    let db = {}; let setlist = []; let curTitle = ""; let isAdmin = false;
+    let db = {}; let setlist = []; let curTitle = ""; let isAdmin = false; let savedTinyURL = "";
 
     function initApp() {
         startEmojis();
@@ -156,17 +145,32 @@
         }
     }
 
+    function handleSmartShare() {
+        const btn = document.getElementById('smartShareBtn');
+        if (!savedTinyURL) {
+            const input = prompt("הדבק כאן את הלינק המקוצר מ-TinyURL:");
+            if (input && input.includes("tinyurl.com")) {
+                savedTinyURL = input;
+                btn.innerHTML = `<i class="fab fa-whatsapp"></i> שלח הזמנה מעוצבת! 👍`;
+                btn.style.background = "#25D366";
+                alert("הלינק נשמר! לחץ שוב לשליחה.");
+            }
+        } else {
+            const message = `🎤 הזמנה לערב שירה עם איתמר אושפיז! 😊\nהכנתי לנו סטליסט מיוחד באפליקציית שירורום 💃🕺\nלחץ על הלינק לבחירת שירים 👍:\n${savedTinyURL}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+            savedTinyURL = "";
+            btn.innerHTML = `<i class="fas fa-paper-plane"></i> 2. הזן לינק מקוצר והפץ`;
+            btn.style.background = "var(--load)";
+        }
+    }
+
     function initSortable() {
         const el = document.getElementById('adminList');
-        Sortable.create(el, {
-            animation: 150,
-            handle: '.song-info',
-            onEnd: function() {
-                const newList = [];
-                document.querySelectorAll('.song-card').forEach(card => { newList.push(card.getAttribute('data-title')); });
-                setlist = newList;
-            }
-        });
+        Sortable.create(el, { animation: 150, handle: '.song-info', onEnd: function() {
+            const newList = [];
+            document.querySelectorAll('.song-card').forEach(card => newList.push(card.getAttribute('data-title')));
+            setlist = newList;
+        }});
     }
 
     function startEmojis() {
@@ -186,97 +190,13 @@
     function nav(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        if(id === 's2') renderAdmin();
+        if(id === 's2') { renderAdmin(); document.getElementById('tinyBtn').style.display = setlist.length > 0 ? 'flex' : 'none'; }
         if(id === 's4') renderAudience();
     }
 
     function renderAdmin() {
         const list = document.getElementById('adminList'); list.innerHTML = '';
         setlist.forEach((s, i) => {
-            const d = document.createElement('div');
-            d.className = 'glass-card song-card';
-            d.setAttribute('data-title', s);
-            d.innerHTML = `
-                <div class="song-info" style="flex:1;" onclick="openPrompter('${s}')">
-                    <i class="fas fa-bars" style="color:#94a3b8; margin-left:10px;"></i>
-                    <span><b>${i+1}.</b> ${s}</span>
-                </div>
-                <i class="fas fa-trash-alt" style="color:#ef4444; padding:10px;" onclick="deleteSong('${s}')"></i>
-            `;
-            list.appendChild(d);
-        });
-    }
-
-    function renderAudience() {
-        const list = document.getElementById('audienceList'); list.innerHTML = '';
-        setlist.forEach(s => {
-            const d = document.createElement('div'); d.className = 'glass-card';
-            d.innerHTML = `<span>${s}</span> <i class="fas fa-play" style="color:var(--primary)"></i>`;
-            d.onclick = () => openPrompter(s);
-            list.appendChild(d);
-        });
-    }
-
-    function openPrompter(title) {
-        curTitle = title;
-        document.getElementById('pTitle').innerText = title;
-        document.getElementById('pBox').innerText = db[title];
-        nav('s5');
-    }
-
-    function openMedia(type) {
-        let q = encodeURIComponent(curTitle);
-        if(type === 'yt') window.open(`https://www.youtube.com/results?search_query=${q}`);
-        if(type === 'kar') window.open(`https://www.youtube.com/results?search_query=${q}+קריוקי`);
-        if(type === 'spot') window.open(`spotify:search:${q}`);
-    }
-
-    function deleteSong(title) {
-        if(confirm(`למחוק את "${title}"?`)) {
-            setlist = setlist.filter(s => s !== title);
-            delete db[title];
-            renderAdmin();
-        }
-    }
-
-    function searchInGoogle() { window.open(`https://www.google.com/search?q=${encodeURIComponent(curTitle)}+מילים`, '_blank'); }
-    function startAdmin() { isAdmin = true; nav('s2'); }
-    function exitPlayer() { if(isAdmin) nav('s2'); else nav('s4'); }
-
-    async function searchSongs(el) {
-        if(el.value.length < 2) return;
-        const r = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(el.value)}&entity=song&limit=6&country=il`);
-        const d = await r.json();
-        const res = document.getElementById('results'); res.innerHTML = '';
-        d.results.forEach(t => {
-            const div = document.createElement('div'); div.className = 'glass-card';
-            div.innerHTML = `<div><b>${t.trackName}</b><br><small>${t.artistName}</small></div> <i class="fas fa-plus-circle" style="color:var(--primary); font-size:1.5rem;"></i>`;
-            div.onclick = () => { curTitle = t.trackName + " - " + t.artistName; document.getElementById('editTitle').innerText = curTitle; nav('s_edit'); };
-            res.appendChild(div);
-        });
-    }
-
-    function addSong() {
-        const lyrics = document.getElementById('lyricPaste').value;
-        if(!lyrics.trim()) return alert("נא להדביק מילים");
-        db[curTitle] = lyrics;
-        if(!setlist.includes(curTitle)) setlist.push(curTitle);
-        document.getElementById('lyricPaste').value = "";
-        nav('s2');
-    }
-
-    function generateLink() {
-        const data = btoa(unescape(encodeURIComponent(JSON.stringify({db, list: setlist}))));
-        const url = window.location.origin + window.location.pathname + "?show=" + data;
-        document.getElementById('shareURL').value = url;
-        nav('s_link');
-    }
-
-    function copyURL() {
-        const el = document.getElementById('shareURL'); el.select();
-        navigator.clipboard.writeText(el.value);
-        alert("הלינק הועתק!");
-    }
-</script>
-</body>
-</html>
+            const d = document.createElement('div'); d.className = 'glass-card song-card'; d.setAttribute('data-title', s);
+            d.innerHTML = `<div class="song-info" style="flex:1;" onclick="openPrompter('${s}')"><b>${i+1}.</b> ${s}</div>
+                           <i class="fas fa-trash-alt"
